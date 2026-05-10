@@ -3,11 +3,10 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 const cheerio = require('cheerio');
-
 const token = process.env.BOT_TOKEN;
 
 if (!token) {
-  console.log('❌ BOT_TOKEN missing');
+  console.log('BOT_TOKEN missing');
   process.exit(1);
 }
 
@@ -15,7 +14,7 @@ const bot = new TelegramBot(token, {
   polling: true,
 });
 
-console.log('✅ Bot running');
+console.log('Bot running');
 
 function isValidUrl(string) {
   try {
@@ -27,8 +26,6 @@ function isValidUrl(string) {
 }
 
 async function getPreview(url) {
-
-  // TikTok Support
   if (url.includes('tiktok.com')) {
 
     const api =
@@ -43,8 +40,6 @@ async function getPreview(url) {
       description: data.title || 'No description',
     };
   }
-
-  // Normal Website Preview
   const response = await axios.get(url, {
     headers: {
       'User-Agent': 'Mozilla/5.0',
@@ -79,20 +74,13 @@ bot.on('message', async (msg) => {
 
   if (!text) return;
 
-  console.log('📩 Message:', text);
+  console.log('Message:', text);
 
   if (!isValidUrl(text)) {
-
-    return bot.sendMessage(
-      chatId,
-      '⚠️ Please send a valid URL.'
-    );
-  }
-
+  return;
+}
   try {
-
     const preview = await getPreview(text);
-
     const message =
 `🎬 Title:
 ${preview.title}
@@ -112,7 +100,6 @@ ${text}`;
           caption: message,
         }
       );
-
     } else {
 
       await bot.sendMessage(
@@ -123,11 +110,11 @@ ${text}`;
 
   } catch (err) {
 
-    console.log('❌ Error:', err.message);
+    console.log('Error:', err.message);
 
     bot.sendMessage(
       chatId,
-      '❌ Failed to fetch preview.'
+      'Failed to fetch preview.'
     );
   }
 });
