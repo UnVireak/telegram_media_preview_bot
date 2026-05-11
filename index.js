@@ -74,7 +74,7 @@ bot.on('message', async (msg) => {
 
   if (!text) return;
 
-  console.log('Message:', text);
+  // console.log('Message:', text);
 
   if (!isValidUrl(text)) {
   return;
